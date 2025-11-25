@@ -6,7 +6,7 @@ public class Character : MonoBehaviour
 {
     const float CharacterJumpPower = 7f;
     const int MaxJump = 2;
-    int RemainJump = 0;
+    int RemainJump = 2;
     GameManager GM;
 
     void Awake()
@@ -19,7 +19,14 @@ public class Character : MonoBehaviour
     {
         // 좌클릭시 RemainJump를 하나 소모하여 CharacterJumpPower의 힘으로 점프한다.
         // ---------- TODO ---------- 
-        
+        if (Input.GetMouseButtonDown(0)) // 마우스 좌클릭 감지
+        {
+            if (RemainJump > 0)
+            {
+                Jump(7);
+                RemainJump--;
+            }
+        }
         // -------------------- 
     }
 
@@ -34,15 +41,33 @@ public class Character : MonoBehaviour
         // tag가 Platform인 것과 충돌하면 RemainJump를 초기화한다.
         // tag가 Obstacle인 것과 충돌하면 게임 오버한다.
         // ---------- TODO ---------- 
-        
-        // -------------------- 
-    }
+        if (col.gameObject.CompareTag("Platform"))
+        {
+            RemainJump = MaxJump;
+        }
+
+        if (col.gameObject.CompareTag("Obstacle"))
+        {
+            if (GM != null)
+            {
+                GM.GameOver();
+            }
+        }
+    // -------------------- 
+}
 
     void OnTriggerEnter2D(Collider2D col)
     {
         // tag가 Point인 것과 충돌하면 Point를 하나 얻고, 충돌한 오브젝트를 삭제한다.
         // ---------- TODO ---------- 
-        
+        if (col.gameObject.CompareTag("Point"))
+        {
+            if (GM != null)
+            {
+                GM.GetPoint(1);
+            }
+            Destroy(col.gameObject);
+        }
         // -------------------- 
     }
 }
